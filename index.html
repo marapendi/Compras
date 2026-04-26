@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sistema Integrado de Compras - Firebase</title>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #eef5ff 0%, #d9eaff 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            padding: 1rem;
+            box-shadow: 0 20px 35px -10px rgba(0, 40, 80, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0a2f6c, #0c4a8a);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 1.5rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 6px 14px #0a2f6c30;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            background: #27ae60;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+        }
+
+        .nav-btn {
+            background: #f0f9ff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #0a2f6c;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn.active {
+            background: #ffcd7e;
+            color: #0a2f6c;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            background: #ffe0a3;
+        }
+
+        .screen {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+            border: 1px solid #cde4ff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0a2f6c;
+            font-size: 0.85rem;
+        }
+
+        input, select, textarea {
+            padding: 0.7rem 0.9rem;
+            border: 1px solid #b9d4ff;
+            border-radius: 1rem;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0a5e9e;
+            box-shadow: 0 0 0 3px rgba(10,47,108,0.2);
+        }
+
+        button {
+            background: #0a2f6c;
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #0e4b8a;
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #3b82f6;
+        }
+
+        .btn-warning {
+            background: #e67e22;
+        }
+
+        .btn-danger {
+            background: #c0392b;
+        }
+
+        .responsive-table {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #cfe2ff;
+            padding: 0.6rem;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+
+        th {
+            background: #e3f0ff;
+            color: #0a2f6c;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000aa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 2rem;
+            padding: 1.5rem;
+        }
+
+        .fornecedor-item {
+            border: 1px solid #ccc;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #0a2f6c;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 10px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .nav-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>💼 SysCompras | Firebase Cloud</h1>
+        <div class="status-badge" id="connStatus">🟢 Conectado</div>
+    </div>
+    <div class="nav-buttons">
+        <button class="nav-btn" data-screen="produtos">📦 Produtos</button>
+        <button class="nav-btn" data-screen="fornecedores">🏢 Fornecedores</button>
+        <button class="nav-btn" data-screen="listaCompras">🛒 Lista Compras</button>
+        <button class="nav-btn" data-screen="cotacoes">📊 Cotações</button>
+        <button class="nav-btn" data-screen="unidades">📏 Unidades</button>
+        <button class="nav-btn" data-screen="grupos">🏷️ Grupos</button>
+    </div>
+
+    <!-- TELA PRODUTOS -->
+    <div id="screen-produtos" class="screen">
+        <h2>📦 Cadastro de Produto</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input type="text" id="prodId" placeholder="auto" readonly></div>
+            <div class="form-group"><label>Produto *</label><input type="text" id="prodNome"></div>
+            <div class="form-group"><label>Marca</label><input type="text" id="prodMarca"></div>
+            <div class="form-group"><label>Unidade *</label><select id="prodUnidade"></select></div>
+            <div class="form-group"><label>Fator Multiplicador</label><input type="number" id="prodFator" value="1"></div>
+            <div class="form-group"><label>Grupo *</label><select id="prodGrupo"></select></div>
+            <div class="form-group"><label>Status</label><select id="prodStatus"><option>Ativo</option><option>Inativo</option></select></div>
+            <div class="form-group"><label>Apelido</label><input type="text" id="prodApelido"></div>
+        </div>
+        <button onclick="salvarProduto()">💾 Salvar Produto</button>
+        <button onclick="limparFormProduto()" class="btn-secondary">➕ Novo</button>
+        <div class="responsive-table"><table id="tabelaProdutos"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Unidade</th><th>Fator</th><th>Grupo</th><th>Status</th><th>Apelido</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <!-- TELA FORNECEDORES -->
+    <div id="screen-fornecedores" class="screen hidden">
+        <h2>🏢 Cadastro de Fornecedor</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input type="text" id="forId" readonly></div>
+            <div class="form-group"><label>Fornecedor *</label><input type="text" id="forNome"></div>
+            <div class="form-group"><label>Categoria</label><input type="text" id="forCategoria"></div>
+            <div class="form-group"><label>Vendedor</label><input type="text" id="forVendedor"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="forEmail"></div>
+            <div class="form-group"><label>Telefone</label><input type="text" id="forTelefone"></div>
+            <div class="form-group"><label>Código</label><input type="text" id="forCodigo"></div>
+            <div class="form-group"><label>Apelido</label><input type="text" id="forApelido"></div>
+        </div>
+        <button onclick="salvarFornecedor()">💾 Salvar Fornecedor</button>
+        <div class="responsive-table"><table id="tabelaFornecedores"><thead><tr><th>ID</th><th>Fornecedor</th><th>Email</th><th>Telefone</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <!-- TELA LISTA DE COMPRAS -->
+    <div id="screen-listaCompras" class="screen hidden">
+        <h2>🛒 Cadastro Lista de Compras</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input type="text" id="lcId" readonly></div>
+            <div class="form-group"><label>Data</label><input type="date" id="lcData"></div>
+            <div class="form-group"><label>Descrição produto</label><input type="text" id="lcDesc"></div>
+            <div class="form-group"><label>Produto *</label><select id="lcProdutoSelect"></select></div>
+            <div class="form-group"><label>Marca</label><input type="text" id="lcMarca"></div>
+            <div class="form-group"><label>Quantidade</label><input type="number" id="lcQtd"></div>
+            <div class="form-group"><label>Unidade</label><input type="text" id="lcUnidade" readonly></div>
+            <div class="form-group"><label>NrCotacao</label><input type="text" id="lcNrCotacao"></div>
+            <div class="form-group"><label>Fator Mult</label><input type="text" id="lcFator" readonly></div>
+            <div class="form-group"><label>Mês</label><input type="text" id="lcMes"></div>
+            <div class="form-group"><label>Ano</label><input type="text" id="lcAno"></div>
+            <div class="form-group"><label>Status</label><input type="text" id="lcStatus" readonly></div>
+            <div class="form-group"><label>Apelido</label><input type="text" id="lcApelido" readonly></div>
+        </div>
+        <button onclick="salvarListaCompra()">Salvar Item Compra</button>
+        <button id="btnGerarCotacaoLista" class="btn-warning">📄 Gerar Lista de Cotação</button>
+        <div class="responsive-table"><table id="tabelaListaCompras"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Qtd</th><th>Unid</th><th>NrCot</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <!-- TELA COTAÇÃO -->
+    <div id="screen-cotacoes" class="screen hidden">
+        <h2>📊 Cadastro de Cotação (Base)</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input type="text" id="cotId" readonly></div>
+            <div class="form-group"><label>Cotação</label><input type="text" id="cotNome"></div>
+            <div class="form-group"><label>Data</label><input type="date" id="cotData"></div>
+            <div class="form-group"><label>Grupo</label><input type="text" id="cotGrupo"></div>
+        </div>
+        <button onclick="salvarCotacao()">Salvar Cotação</button>
+        <div class="responsive-table"><table id="tabelaCotacoes"><thead><tr><th>ID</th><th>Cotação</th><th>Data</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <hr style="margin: 1rem 0">
+        <h3>📋 Cotações enviadas por fornecedores</h3>
+        <div id="listaEnviadasFornecedor"></div>
+    </div>
+
+    <!-- TELA UNIDADES -->
+    <div id="screen-unidades" class="screen hidden">
+        <h2>📏 Unidades</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input id="undId" readonly></div>
+            <div class="form-group"><label>Descrição</label><input id="undDesc"></div>
+            <div class="form-group"><label>Unidade</label><input id="undSigla"></div>
+        </div>
+        <button onclick="salvarUnidade()">Salvar Unidade</button>
+        <div class="responsive-table"><table id="tabelaUnidades"><thead><tr><th>ID</th><th>Descrição</th><th>Unidade</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <!-- TELA GRUPOS -->
+    <div id="screen-grupos" class="screen hidden">
+        <h2>🏷️ Grupos</h2>
+        <div class="form-grid">
+            <div class="form-group"><label>ID</label><input id="grpId" readonly></div>
+            <div class="form-group"><label>Grupo</label><input id="grpNome"></div>
+        </div>
+        <button onclick="salvarGrupo()">Salvar Grupo</button>
+        <div class="responsive-table"><table id="tabelaGrupos"><thead><tr><th>ID</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+    </div>
+</div>
+
+<script>
+    // ==================== CONFIGURAÇÃO DO FIREBASE ====================
+    // 🔴 SUBSTITUA ESTES DADOS PELOS SEUS CREDENCIAIS DO FIREBASE 🔴
+    const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_PROJETO.firebaseapp.com",
+        projectId: "SEU_PROJECT_ID",
+        storageBucket: "SEU_PROJECT_ID.appspot.com",
+        messagingSenderId: "SEU_SENDER_ID",
+        appId: "SEU_APP_ID"
+    };
+    
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    // Referências das coleções
+    const colecoes = {
+        produtos: db.collection('produtos'),
+        fornecedores: db.collection('fornecedores'),
+        listaCompras: db.collection('listaCompras'),
+        cotacoes: db.collection('cotacoes'),
+        unidades: db.collection('unidades'),
+        grupos: db.collection('grupos'),
+        cotaFornecedor: db.collection('cotaFornecedor')
+    };
+    
+    // Estado de conexão
+    document.getElementById('connStatus').textContent = '🟢 Conectado';
+    
+    // ==================== FUNÇÕES CRUD GENÉRICAS ====================
+    async function listar(colecao, tabelaId, renderFn) {
+        try {
+            const snapshot = await colecao.get();
+            const dados = [];
+            snapshot.forEach(doc => dados.push({ id: doc.id, ...doc.data() }));
+            renderFn(dados, tabelaId);
+            return dados;
+        } catch (error) {
+            console.error('Erro ao listar:', error);
+            document.getElementById('connStatus').textContent = '🔴 Erro na conexão';
+            return [];
+        }
+    }
+    
+    async function salvar(colecao, id, dados, nomeTabela) {
+        try {
+            if (id && id !== '') {
+                await colecao.doc(id).update(dados);
+            } else {
+                await colecao.add(dados);
+            }
+            alert(`${nomeTabela} salvo com sucesso!`);
+            await carregarTodasTabelas();
+            return true;
+        } catch (error) {
+            console.error('Erro ao salvar:', error);
+            alert('Erro ao salvar: ' + error.message);
+            return false;
+        }
+    }
+    
+    async function excluir(colecao, id, nomeTabela) {
+        if (confirm(`Tem certeza que deseja excluir ${nomeTabela}?`)) {
+            try {
+                await colecao.doc(id).delete();
+                alert('Excluído com sucesso!');
+                await carregarTodasTabelas();
+            } catch (error) {
+                console.error('Erro ao excluir:', error);
+                alert('Erro ao excluir: ' + error.message);
+            }
+        }
+    }
+    
+    // ==================== RENDERIZAÇÕES ====================
+    function renderProdutos(dados, tabelaId) {
+        const tbody = document.querySelector('#tabelaProdutos tbody');
+        if (!tbody) return;
+        tbody.innerHTML = dados.map(p => `
+            <tr>
+                <td>${p.id}</td>
+                <td>${p.produto || ''}</td>
+                <td>${p.marca || ''}</td>
+                <td>${p.unidade || ''}</td>
+                <td>${p.fatorMultiplicador || 1}</td>
+                <td>${p.grupo || ''}</td>
+                <td>${p.status || 'Ativo'}</td>
+                <td>${p.apelido || ''}</td>
+                <td><button class="btn-danger" onclick="excluirProduto('${p.id}')">🗑️</button></td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderFornecedores(dados) {
+        const tbody = document.querySelector('#tabelaFornecedores tbody');
+        tbody.innerHTML = dados.map(f => `
+            <tr>
+                <td>${f.id}</td>
+                <td>${f.fornecedor || ''}</td>
+                <td>${f.email || ''}</td>
+                <td>${f.telefone || ''}</td>
+                <td><button class="btn-danger" onclick="excluirFornecedor('${f.id}')">Excluir</button></td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderListaCompras(dados) {
+        const tbody = document.querySelector('#tabelaListaCompras tbody');
+        tbody.innerHTML = dados.map(l => `
+            <tr>
+                <td>${l.id}</td>
+                <td>${l.produto || ''}</td>
+                <td>${l.marca || ''}</td>
+                <td>${l.quantidade || 0}</td>
+                <td>${l.unidade || ''}</td>
+                <td>${l.nrcotacao || ''}</td>
+                <td>${l.status || ''}</td>
+                <td><button class="btn-danger" onclick="excluirListaCompra('${l.id}')">Excluir</button></td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderCotacoes(dados) {
+        const tbody = document.querySelector('#tabelaCotacoes tbody');
+        tbody.innerHTML = dados.map(c => `
+            <tr>
+                <td>${c.id}</td>
+                <td>${c.cotacao || ''}</td>
+                <td>${c.data || ''}</td>
+                <td>${c.grupo || ''}</td>
+                <td><button class="btn-danger" onclick="excluirCotacao('${c.id}')">Excluir</button></td>
+            </tr>
+        `).join('');
+        
+        // Carregar cotações enviadas
+        colecoes.cotaFornecedor.get().then(snapshot => {
+            const enviadas = [];
+            snapshot.forEach(doc => enviadas.push({ id: doc.id, ...doc.data() }));
+            const div = document.getElementById('listaEnviadasFornecedor');
+            div.innerHTML = enviadas.map(cf => `
+                <div style='border-bottom:1px solid #ccc; padding:5px'>
+                    <strong>Produto:</strong> ${cf.produtoNome} | 
+                    <strong>Preço:</strong> R$ ${cf.preco} | 
+                    <strong>Obs:</strong> ${cf.observacao} | 
+                    Forn: ${cf.fornecedorId || '?'}
+                </div>
+            `).join('') || '<p>Nenhuma cotação enviada.</p>';
+        });
+    }
+    
+    function renderUnidades(dados) {
+        const tbody = document.querySelector('#tabelaUnidades tbody');
+        tbody.innerHTML = dados.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td>${u.descricao || ''}</td>
+                <td>${u.unidade || ''}</td>
+                <td><button class="btn-danger" onclick="excluirUnidade('${u.id}')">Excluir</button></td>
+            </tr>
+        `).join('');
+        carregarDropdowns();
+    }
+    
+    function renderGrupos(dados) {
+        const tbody = document.querySelector('#tabelaGrupos tbody');
+        tbody.innerHTML = dados.map(g => `
+            <tr>
+                <td>${g.id}</td>
+                <td>${g.grupo || ''}</td>
+                <td><button class="btn-danger" onclick="excluirGrupo('${g.id}')">Excluir</button></td>
+            </tr>
+        `).join('');
+        carregarDropdowns();
+    }
+    
+    // ==================== DROPDOWNS ====================
+    async function carregarDropdowns() {
+        const unidadesSnap = await colecoes.unidades.get();
+   
