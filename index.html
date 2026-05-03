@@ -3,124 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Compras - Azul & Branco</title>
+  <title>Sistema de Compras Pro</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { background-color: #f8f9fa; }
-    .navbar { background-color: #004085; } /* Azul Escuro */
-    .btn-primary { background-color: #004085; border: none; }
-    .btn-primary:hover { background-color: #002752; }
-    .card-header { background-color: #e7f1ff; color: #004085; font-weight: bold; }
-    .section-form { display: none; padding: 20px; }
-    .active-section { display: block; }
+    :root { --blue-dark: #004085; --blue-light: #007bff; }
+    body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
+    .navbar { background-color: var(--blue-dark); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .nav-link { color: rgba(255,255,255,0.8) !important; font-weight: 500; cursor: pointer; }
+    .nav-link:hover { color: white !important; }
+    .card { border: none; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .card-header { background-color: white; border-bottom: 2px solid var(--blue-light); color: var(--blue-dark); font-weight: bold; font-size: 1.2rem; }
+    .btn-primary { background-color: var(--blue-dark); border: none; }
+    .btn-primary:hover { background-color: var(--blue-light); }
+    .section-page { display: none; padding: 20px 0; }
+    .active-page { display: block; }
+    .form-label { font-weight: 600; color: #495057; font-size: 0.9rem; }
+    .auto-filled { background-color: #e9ecef !important; font-style: italic; }
   </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">📦 Gestão de Compras</a>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="fa-solid fa-cart-shopping me-2"></i>COMPRAS PRO</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('prodSection')">Produtos</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('fornSection')">Fornecedores</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('listaSection')">Lista de Compras</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('cotacaoSection')">Cotações</a></li>
-        <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('auxSection')">Unidades/Grupos</a></li>
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" onclick="navegar('home')">Home</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Cadastros</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" onclick="navegar('prod')">Produtos</a></li>
+            <li><a class="dropdown-item" onclick="navegar('forn')">Fornecedores</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" onclick="navegar('unid')">Unidades</a></li>
+            <li><a class="dropdown-item" onclick="navegar('grup')">Grupos</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" onclick="navegar('lista')">Lista de Compras</a></li>
+        <li class="nav-item"><a class="nav-link" onclick="navegar('cotac')">Cotações</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<div class="container bg-white shadow-sm p-4 rounded">
+<div class="container mt-4">
   
-  <section id="prodSection" class="section-form active-section">
-    <h3>Cadastro de Produto</h3>
-    <form id="formProduto" class="row g-3">
-      <div class="col-md-2"><label>ID</label><input type="text" class="form-control" name="id"></div>
-      <div class="col-md-4"><label>Produto</label><input type="text" class="form-control" name="produto"></div>
-      <div class="col-md-3"><label>Marca</label><input type="text" class="form-control" name="marca"></div>
-      <div class="col-md-3"><label>Unidade</label><select class="form-select select-unidade" name="und"></select></div>
-      <div class="col-md-3"><label>Fator Mult.</label><input type="number" class="form-control" name="fator"></div>
-      <div class="col-md-3"><label>Grupo</label><select class="form-select select-grupo" name="grupo"></select></div>
-      <div class="col-md-3"><label>Status</label><input type="text" class="form-control" name="status"></div>
-      <div class="col-md-3"><label>Apelido</label><input type="text" class="form-control" name="apelido"></div>
-      <div class="col-12"><button type="button" class="btn btn-primary" onclick="salvar('Produtos', 'formProduto')">Salvar Produto</button></div>
-    </form>
-  </section>
-
-  <section id="listaSection" class="section-form">
-    <h3>Lista de Compras</h3>
-    <form id="formLista" class="row g-3">
-      <div class="col-md-6"><label>Produto (Base de Dados)</label>
-        <select class="form-select" name="produto" id="listProdSelect" onchange="autoPreencherProduto(this.value)">
-          </select>
+  <div id="page-home" class="section-page active-page text-center">
+    <div class="py-5">
+      <h1 class="display-4 text-primary">Bem-vindo ao Compras Pro</h1>
+      <p class="lead">Selecione uma opção no menu superior para começar.</p>
+      <div class="row mt-5">
+        <div class="col-md-4 mb-3"><div class="card p-3" onclick="navegar('lista')"><h3><i class="fa-solid fa-clipboard-list text-primary"></i></h3>Lista de Compras</div></div>
+        <div class="col-md-4 mb-3"><div class="card p-3" onclick="navegar('prod')"><h3><i class="fa-solid fa-box text-primary"></i></h3>Produtos</div></div>
+        <div class="col-md-4 mb-3"><div class="card p-3" onclick="navegar('cotac')"><h3><i class="fa-solid fa-file-invoice-dollar text-primary"></i></h3>Cotações</div></div>
       </div>
-      <div class="col-md-3"><label>Quantidade</label><input type="number" class="form-control" name="qtd"></div>
-      <div class="col-md-3"><label>Data</label><input type="date" class="form-control" name="data"></div>
-      <div class="col-12 mt-3">
-         <button type="button" class="btn btn-success" onclick="gerarCotacao()">Gerar Lista para Cotação</button>
-      </div>
-    </form>
-  </section>
-
-  <section id="cotacaoSection" class="section-form">
-    <h3>Área do Fornecedor - Preencher Cotação</h3>
-    <div class="table-responsive">
-      <table class="table table-bordered mt-3">
-        <thead>
-          <tr>
-            <th>Produto</th><th>Qtd</th><th>Unid</th><th>Preço (R$)</th><th>Observação</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaCotacao">
-          </tbody>
-      </table>
     </div>
-    <button class="btn btn-primary" onclick="enviarCotacao()">Enviar Cotação para Apreciação</button>
-  </section>
+  </div>
+
+  <div id="page-prod" class="section-page">
+    <div class="card">
+      <div class="card-header">Cadastro de Produto</div>
+      <div class="card-body">
+        <form id="formProd" class="row g-3">
+          <div class="col-md-2"><label class="form-label">ID</label><input type="text" class="form-control" name="id"></div>
+          <div class="col-md-6"><label class="form-label">Produto</label><input type="text" class="form-control" name="produto" required></div>
+          <div class="col-md-4"><label class="form-label">Marca</label><input type="text" class="form-control" name="marca"></div>
+          <div class="col-md-3"><label class="form-label">Unidade</label><select class="form-select dropdown-unidade" name="und"></select></div>
+          <div class="col-md-3"><label class="form-label">Fator Mult.</label><input type="number" class="form-control" name="fator"></div>
+          <div class="col-md-3"><label class="form-label">Grupo</label><select class="form-select dropdown-grupo" name="grupo"></select></div>
+          <div class="col-md-3"><label class="form-label">Status</label><input type="text" class="form-control" name="status"></div>
+          <div class="col-md-12"><label class="form-label">Apelido</label><input type="text" class="form-control" name="apelido"></div>
+          <div class="col-12"><button type="button" class="btn btn-primary" onclick="salvar('Produtos', 'formProd')">Salvar Produto</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-forn" class="section-page">
+    <div class="card">
+      <div class="card-header">Cadastro de Fornecedor</div>
+      <div class="card-body">
+        <form id="formForn" class="row g-3">
+          <div class="col-md-2"><label class="form-label">ID</label><input type="text" class="form-control" name="id"></div>
+          <div class="col-md-6"><label class="form-label">Fornecedor</label><input type="text" class="form-control" name="fornecedor" required></div>
+          <div class="col-md-4"><label class="form-label">Categoria</label><input type="text" class="form-control" name="categoria"></div>
+          <div class="col-md-4"><label class="form-label">Vendedor</label><input type="text" class="form-control" name="vendedor"></div>
+          <div class="col-md-4"><label class="form-label">E-mail</label><input type="email" class="form-control" name="email"></div>
+          <div class="col-md-4"><label class="form-label">Telefone</label><input type="text" class="form-control" name="telefone"></div>
+          <div class="col-md-3"><label class="form-label">Código</label><input type="text" class="form-control" name="codigo"></div>
+          <div class="col-md-9"><label class="form-label">Apelido</label><input type="text" class="form-control" name="apelido"></div>
+          <div class="col-12"><button type="button" class="btn btn-primary" onclick="salvar('Fornecedores', 'formForn')">Salvar Fornecedor</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-unid" class="section-page">
+    <div class="card col-md-6 mx-auto">
+      <div class="card-header">Cadastro de Unidade</div>
+      <div class="card-body">
+        <form id="formUnid" class="row g-3">
+          <div class="col-md-4"><label class="form-label">ID</label><input type="text" class="form-control" name="id"></div>
+          <div class="col-md-8"><label class="form-label">Descrição</label><input type="text" class="form-control" name="descricao"></div>
+          <div class="col-md-12"><label class="form-label">Sigla Unidade</label><input type="text" class="form-control" name="unidade"></div>
+          <div class="col-12 text-center"><button type="button" class="btn btn-primary" onclick="salvar('Unidades', 'formUnid')">Salvar Unidade</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-grup" class="section-page">
+    <div class="card col-md-6 mx-auto">
+      <div class="card-header">Cadastro de Grupo</div>
+      <div class="card-body">
+        <form id="formGrup" class="row g-3">
+          <div class="col-md-4"><label class="form-label">ID</label><input type="text" class="form-control" name="id"></div>
+          <div class="col-md-8"><label class="form-label">Nome do Grupo</label><input type="text" class="form-control" name="grupo"></div>
+          <div class="col-12 text-center"><button type="button" class="btn btn-primary" onclick="salvar('Grupos', 'formGrup')">Salvar Grupo</button></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-lista" class="section-page">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        Lista de Compras
+        <span class="badge bg-primary">Auto-Preenchimento Ativado</span>
+      </div>
+      <div class="card-body">
+        <form id="formLista" class="row g-3">
+          <div class="col-md-2"><label class="form-label">ID</label><input type="text" class="form-control" name="id"></div>
+          <div class="col-md-3"><label class="form-label">Data</label><input type="date" class="form-control" name="data"></div>
+          <div class="col-md-7"><label class="form-label">Descrição Produto</label><input type="text" class="form-control" name="desc_extra"></div>
+          
+          <div class="col-md-6">
+            <label class="form-label">Produto (Selecione)</label>
+            <select class="form-select border-primary" name="produto" id="listProdMain" onchange="autoFillFromProduct(this.value)">
+              <option value="">Carregando produtos...</option>
+            </select>
+          </div>
+          
+          <div class="col-md-3"><label class="form-label">Marca</label><input type="text" class="form-control auto-filled" name="marca" readonly></div>
+          <div class="col-md-3"><label class="form-label">Quantidade</label><input type="number" class="form-control" name="quantidade"></div>
+          <div class="col-md-3"><label class="form-label">Unidade</label><input type="text" class="form-control auto-filled" name="unidade" readonly></div>
+          <div class="col-md-3"><label class="form-label">Fator Mult.</label><input type="text" class="form-control auto-filled" name="fator" readonly></div>
+          <div class="col-md-3"><label class="form-label">Nr Cotação</label><input type="text" class="form-control" name="nrcotacao"></div>
+          <div class="col-md-3"><label class="form-label">Mês</label><input type="text" class="form-control" name="mes"></div>
+          <div class="col-md-3"><label class="form-label">Ano</label><input type="text" class="form-control" name="ano"></div>
+          <div class="col-md-3"><label class="form-label">Status</label><input type="text" class="form-control auto-filled" name="status" readonly></div>
+          <div class="col-md-6"><label class="form-label">Apelido</label><input type="text" class="form-control auto-filled" name="apelido" readonly></div>
+          
+          <div class="col-12 mt-4 d-flex gap-2">
+            <button type="button" class="btn btn-primary" onclick="salvar('ListaCompras', 'formLista')">Salvar na Lista</button>
+            <button type="button" class="btn btn-success" onclick="abrirPainelCotacao()">Gerar Lista de Cotação</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="page-cotac" class="section-page">
+    <div class="card">
+      <div class="card-header">Painel de Cotação</div>
+      <div class="card-body">
+        <div class="alert alert-info"><i class="fa-solid fa-info-circle"></i> Fornecedor: Preencha os campos de preço e observação abaixo.</div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Produto / Marca</th>
+                <th>Qtd / Unid</th>
+                <th style="width: 150px;">Preço (R$)</th>
+                <th>Observação</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaItensCotacao">
+              </tbody>
+          </table>
+        </div>
+        <div class="text-end mt-3">
+          <button class="btn btn-primary btn-lg" onclick="finalizarCotacao()">Enviar Cotação para Análise</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Navegação simples entre telas
-  function showSection(id) {
-    document.querySelectorAll('.section-form').forEach(s => s.classList.remove('active-section'));
-    document.getElementById(id).classList.add('active-section');
-    carregarDropdowns();
+  let cacheProdutos = [];
+
+  function navegar(pagina) {
+    document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active-page'));
+    document.getElementById('page-' + pagina).classList.add('active-page');
+    
+    // Ao navegar, atualizar dropdowns se necessário
+    if(pagina === 'prod' || pagina === 'lista') carregarApoios();
   }
 
-  // Carrega Unidades, Grupos e Produtos nos Dropdowns
-  function carregarDropdowns() {
+  function carregarApoios() {
+    // Carrega Unidades
     google.script.run.withSuccessHandler(function(data) {
-      // Lógica para preencher selects de Unidades e Grupos
-    }).buscarDadosAba('Unidades');
+      const selects = document.querySelectorAll('.dropdown-unidade');
+      selects.forEach(s => {
+        s.innerHTML = '<option value="">Selecione...</option>';
+        data.slice(1).forEach(r => s.innerHTML += `<option value="${r[2]}">${r[1]} (${r[2]})</option>`);
+      });
+    }).buscarDados('Unidades');
+
+    // Carrega Grupos
+    google.script.run.withSuccessHandler(function(data) {
+      const selects = document.querySelectorAll('.dropdown-grupo');
+      selects.forEach(s => {
+        s.innerHTML = '<option value="">Selecione...</option>';
+        data.slice(1).forEach(r => s.innerHTML += `<option value="${r[1]}">${r[1]}</option>`);
+      });
+    }).buscarDados('Grupos');
+
+    // Carrega Produtos para a Lista
+    google.script.run.withSuccessHandler(function(data) {
+      cacheProdutos = data.slice(1);
+      const select = document.getElementById('listProdMain');
+      select.innerHTML = '<option value="">Selecione o produto...</option>';
+      cacheProdutos.forEach((r, index) => {
+        select.innerHTML += `<option value="${index}">${r[1]}</option>`;
+      });
+    }).buscarDados('Produtos');
+  }
+
+  function autoFillFromProduct(index) {
+    if(index === "") return;
+    const p = cacheProdutos[index];
+    const f = document.getElementById('formLista');
+    // Mapeamento: 0:id, 1:produto, 2:marca, 3:und, 4:fator, 5:grupo, 6:status, 7:apelido
+    f.marca.value = p[2] || "";
+    f.unidade.value = p[3] || "";
+    f.fator.value = p[4] || "";
+    f.status.value = p[6] || "";
+    f.apelido.value = p[7] || "";
   }
 
   function salvar(aba, formId) {
     const form = document.getElementById(formId);
-    const dados = new FormData(form);
-    const arrayDados = Array.from(dados.values());
+    const formData = new FormData(form);
+    const arrayDados = Array.from(formData.values());
     
-    google.script.run.withSuccessHandler(() => {
-      alert("Dados salvos em " + aba);
+    google.script.run.withSuccessHandler(function(res) {
+      alert(res);
       form.reset();
     }).salvarDados(aba, arrayDados);
   }
 
-  function gerarCotacao() {
-    alert("Lista de cotação gerada. Os fornecedores agora podem visualizar os campos de preço.");
-    showSection('cotacaoSection');
+  function abrirPainelCotacao() {
+    // Simulação de pegar o item atual para cotação
+    const form = document.getElementById('formLista');
+    if(!form.produto.value) { alert("Selecione um produto primeiro"); return; }
+    
+    const prodNome = document.querySelector('#listProdMain option:checked').text;
+    const marca = form.marca.value;
+    const qtd = form.quantidade.value;
+    const unid = form.unidade.value;
+
+    const tbody = document.getElementById('tabelaItensCotacao');
+    tbody.innerHTML = `
+      <tr>
+        <td><strong>${prodNome}</strong><br><small class="text-muted">${marca}</small></td>
+        <td>${qtd} ${unid}</td>
+        <td><input type="number" class="form-control" id="cot-preco"></td>
+        <td><textarea class="form-control" rows="1" id="cot-obs"></textarea></td>
+      </tr>
+    `;
+    navegar('cotac');
   }
 
-  function enviarCotacao() {
-    alert("Cotação enviada com sucesso para análise!");
+  function finalizarCotacao() {
+    const preco = document.getElementById('cot-preco').value;
+    if(!preco) { alert("Por favor, preencha o preço."); return; }
+    
+    alert("Cotação enviada com sucesso para o comprador!");
+    navegar('home');
   }
+
+  // Inicialização
+  window.onload = carregarApoios;
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
