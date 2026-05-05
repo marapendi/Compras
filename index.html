@@ -1,4 +1,4 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -58,13 +58,13 @@ DOCTYPE html>
             display: flex;
             flex-wrap: wrap;
             gap: 0.7rem;
-            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .nav-btn {
             background: #f0f9ff;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.7rem 1.2rem;
             border-radius: 40px;
             font-weight: 600;
             color: #0a2f6c;
@@ -123,7 +123,7 @@ DOCTYPE html>
             background: #fefefe;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #0a5e9e;
             box-shadow: 0 0 0 3px rgba(10,47,108,0.2);
@@ -157,6 +157,10 @@ DOCTYPE html>
 
         .btn-danger {
             background: #c0392b;
+        }
+
+        .btn-success {
+            background: #27ae60;
         }
 
         .responsive-table {
@@ -212,10 +216,18 @@ DOCTYPE html>
             padding: 1rem;
         }
 
+        .config-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
         @media (max-width: 640px) {
             body { padding: 10px; }
             .form-grid { grid-template-columns: 1fr; }
-            .nav-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
+            .nav-btn { padding: 0.5rem 0.8rem; font-size: 0.75rem; }
             button { font-size: 0.8rem; padding: 0.5rem 1rem; }
         }
     </style>
@@ -226,8 +238,9 @@ DOCTYPE html>
         <h1>💼 SysCompras | Google Sheets</h1>
         <div class="status-badge" id="connStatus">🟡 Conectando...</div>
     </div>
+    
     <div class="nav-buttons">
-        <button class="nav-btn active" data-screen="produtos">📦 Produtos</button>
+        <button class="nav-btn" data-screen="produtos">📦 Produtos</button>
         <button class="nav-btn" data-screen="fornecedores">🏢 Fornecedores</button>
         <button class="nav-btn" data-screen="listaCompras">🛒 Lista Compras</button>
         <button class="nav-btn" data-screen="cotacoes">📊 Cotações</button>
@@ -250,7 +263,14 @@ DOCTYPE html>
         </div>
         <button onclick="salvarProduto()">💾 Salvar Produto</button>
         <button onclick="limparFormProduto()" class="btn-secondary">➕ Novo</button>
-        <div class="responsive-table"><table id="tabelaProdutos"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Unidade</th><th>Fator</th><th>Grupo</th><th>Status</th><th>Apelido</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <div class="responsive-table">
+            <table id="tabelaProdutos">
+                <thead>
+                    <tr><th>ID</th><th>Produto</th><th>Marca</th><th>Unidade</th><th>Fator</th><th>Grupo</th><th>Status</th><th>Apelido</th><th>Ações</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- TELA FORNECEDORES -->
@@ -267,7 +287,12 @@ DOCTYPE html>
             <div class="form-group"><label>Apelido</label><input type="text" id="forApelido" placeholder="Apelido"></div>
         </div>
         <button onclick="salvarFornecedor()">💾 Salvar Fornecedor</button>
-        <div class="responsive-table"><table id="tabelaFornecedores"><thead><tr><th>ID</th><th>Fornecedor</th><th>Email</th><th>Telefone</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <div class="responsive-table">
+            <table id="tabelaFornecedores">
+                <thead><tr><th>ID</th><th>Fornecedor</th><th>Email</th><th>Telefone</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- TELA LISTA DE COMPRAS -->
@@ -290,7 +315,12 @@ DOCTYPE html>
         </div>
         <button onclick="salvarListaCompra()">💾 Salvar Item Compra</button>
         <button id="btnGerarCotacaoLista" class="btn-warning">📄 Gerar Lista de Cotação</button>
-        <div class="responsive-table"><table id="tabelaListaCompras"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Qtd</th><th>Unid</th><th>NrCot</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <div class="responsive-table">
+            <table id="tabelaListaCompras">
+                <thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Qtd</th><th>Unid</th><th>NrCot</th><th>Status</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- TELA COTAÇÃO -->
@@ -303,7 +333,12 @@ DOCTYPE html>
             <div class="form-group"><label>Grupo</label><input type="text" id="cotGrupo" placeholder="Grupo"></div>
         </div>
         <button onclick="salvarCotacao()">💾 Salvar Cotação</button>
-        <div class="responsive-table"><table id="tabelaCotacoes"><thead><tr><th>ID</th><th>Cotação</th><th>Data</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <div class="responsive-table">
+            <table id="tabelaCotacoes">
+                <thead><tr><th>ID</th><th>Cotação</th><th>Data</th><th>Grupo</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <hr style="margin: 1rem 0">
         <h3>📋 Cotações enviadas por fornecedores</h3>
         <div id="listaEnviadasFornecedor"></div>
@@ -318,7 +353,12 @@ DOCTYPE html>
             <div class="form-group"><label>Unidade</label><input id="undSigla" placeholder="Ex: KG"></div>
         </div>
         <button onclick="salvarUnidade()">💾 Salvar Unidade</button>
-        <div class="responsive-table"><table id="tabelaUnidades"><thead><tr><th>ID</th><th>Descrição</th><th>Unidade</th><th>Ações</th></tr></thead><tbody></tbody></tr></div>
+        <div class="responsive-table">
+            <table id="tabelaUnidades">
+                <thead><tr><th>ID</th><th>Descrição</th><th>Unidade</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <!-- TELA GRUPOS -->
@@ -329,93 +369,23 @@ DOCTYPE html>
             <div class="form-group"><label>Grupo</label><input id="grpNome" placeholder="Nome do grupo"></div>
         </div>
         <button onclick="salvarGrupo()">💾 Salvar Grupo</button>
-        <div class="responsive-table"><table id="tabelaGrupos"><thead><tr><th>ID</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+        <div class="responsive-table">
+            <table id="tabelaGrupos">
+                <thead><tr><th>ID</th><th>Grupo</th><th>Ações</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
     // ==================== CONFIGURAÇÃO ====================
-    // 🔴 COLE A URL DO SEU GOOGLE APPS SCRIPT AQUI 🔴
+    // 🔴 ATENÇÃO: COLE A URL DO SEU GOOGLE APPS SCRIPT AQUI 🔴
+    // Como obter: Extensões > Apps Script > Implantar > Nova implantação > Aplicativo da Web
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUkexrkMk7ajmXFocjDuv0VAO3gee8ub2rfJk4Lvd19bwNlELoMPkUHncxF83BTDl2/exec";
     
-    // API Helper
-    async function apiRequest(acao, tabela, dados = null, id = null) {
-        try {
-            const payload = { acao, tabela };
-            if (dados) payload.dados = dados;
-            if (id) payload.id = id;
-            
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Necessário para Apps Script
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            // Como no-cors não permite ler resposta, usamos fallback
-            // O Apps Script ainda processa a requisição
-            if (acao === 'listar') {
-                // Para listar, precisamos de uma abordagem diferente
-                return await fetch(`${SCRIPT_URL}?tabela=${tabela}&acao=listar`, {
-                    method: 'GET'
-                }).then(res => res.json());
-            }
-            
-            return { sucesso: true };
-        } catch (error) {
-            console.error('Erro na API:', error);
-            throw error;
-        }
-    }
-    
-    // Versão melhorada para listar dados
-    async function listarDados(tabela) {
-        try {
-            const response = await fetch(`${SCRIPT_URL}?tabela=${tabela}&acao=listar&_=${Date.now()}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            const result = await response.json();
-            return result.sucesso ? result.dados : [];
-        } catch (error) {
-            console.error(`Erro ao listar ${tabela}:`, error);
-            return [];
-        }
-    }
-    
-    async function salvarDados(tabela, dados, id = null) {
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: 'salvar', tabela, dados, id })
-            });
-            return true;
-        } catch (error) {
-            console.error('Erro ao salvar:', error);
-            return false;
-        }
-    }
-    
-    async function excluirDados(tabela, id) {
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: 'excluir', tabela, id })
-            });
-            return true;
-        } catch (error) {
-            console.error('Erro ao excluir:', error);
-            return false;
-        }
-    }
+    // Configuração para modo de demonstração (quando não tem URL configurada)
+    const MODO_DEMO = SCRIPT_URL.includes("SEU_SCRIPT_ID");
     
     // ==================== ESTADO GLOBAL ====================
     let produtos = [];
@@ -425,6 +395,82 @@ DOCTYPE html>
     let unidades = [];
     let grupos = [];
     let cotaFornecedor = [];
+    
+    // ==================== API HELPER ====================
+    async function apiRequest(acao, tabela, dados = null, id = null) {
+        if (MODO_DEMO) {
+            // Modo demonstração - dados fictícios
+            return await apiMock(acao, tabela, dados, id);
+        }
+        
+        try {
+            const url = `${SCRIPT_URL}?acao=${acao}&tabela=${tabela}&_=${Date.now()}`;
+            const body = { acao, tabela };
+            if (dados) body.dados = dados;
+            if (id) body.id = id;
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Erro na API:', error);
+            return { sucesso: false, erro: error.message };
+        }
+    }
+    
+    // Mock para demonstração (dados locais)
+    let mockData = {
+        produtos: [],
+        fornecedores: [],
+        listaCompras: [],
+        cotacoes: [],
+        unidades: [{ id: '1', descricao: 'Quilograma', unidade: 'KG' }, { id: '2', descricao: 'Unidade', unidade: 'UN' }],
+        grupos: [{ id: '1', grupo: 'Alimentício' }, { id: '2', grupo: 'Limpeza' }],
+        cotaFornecedor: []
+    };
+    
+    async function apiMock(acao, tabela, dados, id) {
+        if (acao === 'listar') {
+            return { sucesso: true, dados: mockData[tabela] || [] };
+        }
+        if (acao === 'salvar') {
+            if (id) {
+                const index = mockData[tabela].findIndex(item => item.id === id);
+                if (index !== -1) {
+                    mockData[tabela][index] = { ...dados, id };
+                }
+            } else {
+                const novoId = Date.now().toString();
+                mockData[tabela].push({ ...dados, id: novoId });
+            }
+            return { sucesso: true };
+        }
+        if (acao === 'excluir') {
+            mockData[tabela] = mockData[tabela].filter(item => item.id !== id);
+            return { sucesso: true };
+        }
+        return { sucesso: false };
+    }
+    
+    async function listarDados(tabela) {
+        const result = await apiRequest('listar', tabela);
+        return result.sucesso ? (result.dados || []) : [];
+    }
+    
+    async function salvarDados(tabela, dados, id = null) {
+        const result = await apiRequest('salvar', tabela, dados, id);
+        return result.sucesso;
+    }
+    
+    async function excluirDados(tabela, id) {
+        const result = await apiRequest('excluir', tabela, id);
+        return result.sucesso;
+    }
     
     // ==================== RENDERIZAÇÕES ====================
     function renderProdutos() {
@@ -503,512 +549,7 @@ DOCTYPE html>
         }
         
         const div = document.getElementById('listaEnviadasFornecedor');
-        if (cotaFornecedor.lengDOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sistema Integrado de Compras - Google Sheets</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(145deg, #eef5ff 0%, #d9eaff 100%);
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: #ffffffdd;
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            padding: 1rem;
-            box-shadow: 0 20px 35px -10px rgba(0, 40, 80, 0.3);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0a2f6c, #0c4a8a);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 1.5rem;
-            margin-bottom: 1.8rem;
-            box-shadow: 0 6px 14px #0a2f6c30;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-
-        .status-badge {
-            background: #27ae60;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .nav-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            margin-top: 0.5rem;
-        }
-
-        .nav-btn {
-            background: #f0f9ff;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            font-weight: 600;
-            color: #0a2f6c;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-
-        .nav-btn.active {
-            background: #ffcd7e;
-            color: #0a2f6c;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .nav-btn:hover {
-            transform: translateY(-2px);
-            background: #ffe0a3;
-        }
-
-        .screen {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid #cde4ff;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.2rem;
-            margin-bottom: 1.8rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-        }
-
-        label {
-            font-weight: 600;
-            color: #0a2f6c;
-            font-size: 0.85rem;
-        }
-
-        input, select, textarea {
-            padding: 0.7rem 0.9rem;
-            border: 1px solid #b9d4ff;
-            border-radius: 1rem;
-            font-size: 0.9rem;
-            background: #fefefe;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #0a5e9e;
-            box-shadow: 0 0 0 3px rgba(10,47,108,0.2);
-        }
-
-        button {
-            background: #0a2f6c;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        button:hover {
-            background: #0e4b8a;
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: #3b82f6;
-        }
-
-        .btn-warning {
-            background: #e67e22;
-        }
-
-        .btn-danger {
-            background: #c0392b;
-        }
-
-        .responsive-table {
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            border: 1px solid #cfe2ff;
-            padding: 0.6rem;
-            text-align: left;
-            font-size: 0.8rem;
-        }
-
-        th {
-            background: #e3f0ff;
-            color: #0a2f6c;
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000aa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 800px;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 2rem;
-            padding: 1.5rem;
-        }
-
-        .fornecedor-item {
-            border: 1px solid #ccc;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            padding: 1rem;
-        }
-
-        @media (max-width: 640px) {
-            body { padding: 10px; }
-            .form-grid { grid-template-columns: 1fr; }
-            .nav-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
-            button { font-size: 0.8rem; padding: 0.5rem 1rem; }
-        }
-    </style>
-</head>
-<body>
-<div class="app-container">
-    <div class="header">
-        <h1>💼 SysCompras | Google Sheets</h1>
-        <div class="status-badge" id="connStatus">🟡 Conectando...</div>
-    </div>
-    <div class="nav-buttons">
-        <button class="nav-btn active" data-screen="produtos">📦 Produtos</button>
-        <button class="nav-btn" data-screen="fornecedores">🏢 Fornecedores</button>
-        <button class="nav-btn" data-screen="listaCompras">🛒 Lista Compras</button>
-        <button class="nav-btn" data-screen="cotacoes">📊 Cotações</button>
-        <button class="nav-btn" data-screen="unidades">📏 Unidades</button>
-        <button class="nav-btn" data-screen="grupos">🏷️ Grupos</button>
-    </div>
-
-    <!-- TELA PRODUTOS -->
-    <div id="screen-produtos" class="screen">
-        <h2>📦 Cadastro de Produto</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input type="text" id="prodId" placeholder="auto" readonly></div>
-            <div class="form-group"><label>Produto *</label><input type="text" id="prodNome" placeholder="Digite o nome do produto"></div>
-            <div class="form-group"><label>Marca</label><input type="text" id="prodMarca" placeholder="Marca"></div>
-            <div class="form-group"><label>Unidade *</label><select id="prodUnidade"></select></div>
-            <div class="form-group"><label>Fator Multiplicador</label><input type="number" id="prodFator" value="1" step="0.01"></div>
-            <div class="form-group"><label>Grupo *</label><select id="prodGrupo"></select></div>
-            <div class="form-group"><label>Status</label><select id="prodStatus"><option>Ativo</option><option>Inativo</option></select></div>
-            <div class="form-group"><label>Apelido</label><input type="text" id="prodApelido" placeholder="Apelido"></div>
-        </div>
-        <button onclick="salvarProduto()">💾 Salvar Produto</button>
-        <button onclick="limparFormProduto()" class="btn-secondary">➕ Novo</button>
-        <div class="responsive-table"><table id="tabelaProdutos"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Unidade</th><th>Fator</th><th>Grupo</th><th>Status</th><th>Apelido</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
-    </div>
-
-    <!-- TELA FORNECEDORES -->
-    <div id="screen-fornecedores" class="screen hidden">
-        <h2>🏢 Cadastro de Fornecedor</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input type="text" id="forId" readonly></div>
-            <div class="form-group"><label>Fornecedor *</label><input type="text" id="forNome" placeholder="Nome do fornecedor"></div>
-            <div class="form-group"><label>Categoria</label><input type="text" id="forCategoria" placeholder="Categoria"></div>
-            <div class="form-group"><label>Vendedor</label><input type="text" id="forVendedor" placeholder="Vendedor"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="forEmail" placeholder="email@exemplo.com"></div>
-            <div class="form-group"><label>Telefone</label><input type="text" id="forTelefone" placeholder="(00) 00000-0000"></div>
-            <div class="form-group"><label>Código</label><input type="text" id="forCodigo" placeholder="Código"></div>
-            <div class="form-group"><label>Apelido</label><input type="text" id="forApelido" placeholder="Apelido"></div>
-        </div>
-        <button onclick="salvarFornecedor()">💾 Salvar Fornecedor</button>
-        <div class="responsive-table"><table id="tabelaFornecedores"><thead><tr><th>ID</th><th>Fornecedor</th><th>Email</th><th>Telefone</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
-    </div>
-
-    <!-- TELA LISTA DE COMPRAS -->
-    <div id="screen-listaCompras" class="screen hidden">
-        <h2>🛒 Cadastro Lista de Compras</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input type="text" id="lcId" readonly></div>
-            <div class="form-group"><label>Data</label><input type="date" id="lcData"></div>
-            <div class="form-group"><label>Descrição produto</label><input type="text" id="lcDesc" placeholder="Descrição"></div>
-            <div class="form-group"><label>Produto *</label><select id="lcProdutoSelect"></select></div>
-            <div class="form-group"><label>Marca</label><input type="text" id="lcMarca" readonly></div>
-            <div class="form-group"><label>Quantidade</label><input type="number" id="lcQtd" value="1" step="0.01"></div>
-            <div class="form-group"><label>Unidade</label><input type="text" id="lcUnidade" readonly></div>
-            <div class="form-group"><label>NrCotacao</label><input type="text" id="lcNrCotacao" placeholder="Nº Cotação"></div>
-            <div class="form-group"><label>Fator Mult</label><input type="text" id="lcFator" readonly></div>
-            <div class="form-group"><label>Mês</label><input type="text" id="lcMes" placeholder="Mês"></div>
-            <div class="form-group"><label>Ano</label><input type="text" id="lcAno" placeholder="Ano"></div>
-            <div class="form-group"><label>Status</label><input type="text" id="lcStatus" readonly></div>
-            <div class="form-group"><label>Apelido</label><input type="text" id="lcApelido" readonly></div>
-        </div>
-        <button onclick="salvarListaCompra()">💾 Salvar Item Compra</button>
-        <button id="btnGerarCotacaoLista" class="btn-warning">📄 Gerar Lista de Cotação</button>
-        <div class="responsive-table"><table id="tabelaListaCompras"><thead><tr><th>ID</th><th>Produto</th><th>Marca</th><th>Qtd</th><th>Unid</th><th>NrCot</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
-    </div>
-
-    <!-- TELA COTAÇÃO -->
-    <div id="screen-cotacoes" class="screen hidden">
-        <h2>📊 Cadastro de Cotação (Base)</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input type="text" id="cotId" readonly></div>
-            <div class="form-group"><label>Cotação</label><input type="text" id="cotNome" placeholder="Nome da cotação"></div>
-            <div class="form-group"><label>Data</label><input type="date" id="cotData"></div>
-            <div class="form-group"><label>Grupo</label><input type="text" id="cotGrupo" placeholder="Grupo"></div>
-        </div>
-        <button onclick="salvarCotacao()">💾 Salvar Cotação</button>
-        <div class="responsive-table"><table id="tabelaCotacoes"><thead><tr><th>ID</th><th>Cotação</th><th>Data</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
-        <hr style="margin: 1rem 0">
-        <h3>📋 Cotações enviadas por fornecedores</h3>
-        <div id="listaEnviadasFornecedor"></div>
-    </div>
-
-    <!-- TELA UNIDADES -->
-    <div id="screen-unidades" class="screen hidden">
-        <h2>📏 Unidades</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input id="undId" readonly></div>
-            <div class="form-group"><label>Descrição</label><input id="undDesc" placeholder="Ex: Quilograma"></div>
-            <div class="form-group"><label>Unidade</label><input id="undSigla" placeholder="Ex: KG"></div>
-        </div>
-        <button onclick="salvarUnidade()">💾 Salvar Unidade</button>
-        <div class="responsive-table"><table id="tabelaUnidades"><thead><tr><th>ID</th><th>Descrição</th><th>Unidade</th><th>Ações</th></tr></thead><tbody></tbody></tr></div>
-    </div>
-
-    <!-- TELA GRUPOS -->
-    <div id="screen-grupos" class="screen hidden">
-        <h2>🏷️ Grupos</h2>
-        <div class="form-grid">
-            <div class="form-group"><label>ID</label><input id="grpId" readonly></div>
-            <div class="form-group"><label>Grupo</label><input id="grpNome" placeholder="Nome do grupo"></div>
-        </div>
-        <button onclick="salvarGrupo()">💾 Salvar Grupo</button>
-        <div class="responsive-table"><table id="tabelaGrupos"><thead><tr><th>ID</th><th>Grupo</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
-    </div>
-</div>
-
-<script>
-    // ==================== CONFIGURAÇÃO ====================
-    // 🔴 COLE A URL DO SEU GOOGLE APPS SCRIPT AQUI 🔴
-    const SCRIPT_URL = "https://script.google.com/macros/s/SEU_SCRIPT_ID/exec";
-    
-    // API Helper
-    async function apiRequest(acao, tabela, dados = null, id = null) {
-        try {
-            const payload = { acao, tabela };
-            if (dados) payload.dados = dados;
-            if (id) payload.id = id;
-            
-            const response = await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', // Necessário para Apps Script
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            // Como no-cors não permite ler resposta, usamos fallback
-            // O Apps Script ainda processa a requisição
-            if (acao === 'listar') {
-                // Para listar, precisamos de uma abordagem diferente
-                return await fetch(`${SCRIPT_URL}?tabela=${tabela}&acao=listar`, {
-                    method: 'GET'
-                }).then(res => res.json());
-            }
-            
-            return { sucesso: true };
-        } catch (error) {
-            console.error('Erro na API:', error);
-            throw error;
-        }
-    }
-    
-    // Versão melhorada para listar dados
-    async function listarDados(tabela) {
-        try {
-            const response = await fetch(`${SCRIPT_URL}?tabela=${tabela}&acao=listar&_=${Date.now()}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            const result = await response.json();
-            return result.sucesso ? result.dados : [];
-        } catch (error) {
-            console.error(`Erro ao listar ${tabela}:`, error);
-            return [];
-        }
-    }
-    
-    async function salvarDados(tabela, dados, id = null) {
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: 'salvar', tabela, dados, id })
-            });
-            return true;
-        } catch (error) {
-            console.error('Erro ao salvar:', error);
-            return false;
-        }
-    }
-    
-    async function excluirDados(tabela, id) {
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acao: 'excluir', tabela, id })
-            });
-            return true;
-        } catch (error) {
-            console.error('Erro ao excluir:', error);
-            return false;
-        }
-    }
-    
-    // ==================== ESTADO GLOBAL ====================
-    let produtos = [];
-    let fornecedores = [];
-    let listaCompras = [];
-    let cotacoes = [];
-    let unidades = [];
-    let grupos = [];
-    let cotaFornecedor = [];
-    
-    // ==================== RENDERIZAÇÕES ====================
-    function renderProdutos() {
-        const tbody = document.querySelector('#tabelaProdutos tbody');
-        if (!tbody) return;
-        if (produtos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Nenhum produto cadastrado</td></tr>';
-            return;
-        }
-        tbody.innerHTML = produtos.map(p => `
-            <tr>
-                <td>${p.id || ''}</td>
-                <td>${p.produto || ''}</td>
-                <td>${p.marca || ''}</td>
-                <td>${p.unidade || ''}</td>
-                <td>${p.fatorMultiplicador || 1}</td>
-                <td>${p.grupo || ''}</td>
-                <td>${p.status || 'Ativo'}</td>
-                <td>${p.apelido || ''}</td>
-                <td><button class="btn-danger" onclick="excluirProduto('${p.id}')">🗑️ Excluir</button></td>
-            </tr>
-        `).join('');
-    }
-    
-    function renderFornecedores() {
-        const tbody = document.querySelector('#tabelaFornecedores tbody');
-        if (fornecedores.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">Nenhum fornecedor cadastrado</td></tr>';
-            return;
-        }
-        tbody.innerHTML = fornecedores.map(f => `
-            <tr>
-                <td>${f.id || ''}</td>
-                <td>${f.fornecedor || ''}</td>
-                <td>${f.email || ''}</td>
-                <td>${f.telefone || ''}</td>
-                <td><button class="btn-danger" onclick="excluirFornecedor('${f.id}')">🗑️ Excluir</button></td>
-            </tr>
-        `).join('');
-    }
-    
-    function renderListaCompras() {
-        const tbody = document.querySelector('#tabelaListaCompras tbody');
-        if (listaCompras.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Nenhum item na lista de compras</td></tr>';
-            return;
-        }
-        tbody.innerHTML = listaCompras.map(l => `
-            <tr>
-                <td>${l.id || ''}</td>
-                <td>${l.produto || ''}</td>
-                <td>${l.marca || ''}</td>
-                <td>${l.quantidade || 0}</td>
-                <td>${l.unidade || ''}</td>
-                <td>${l.nrcotacao || ''}</td>
-                <td>${l.status || ''}</td>
-                <td><button class="btn-danger" onclick="excluirListaCompra('${l.id}')">🗑️ Excluir</button></td>
-            </tr>
-        `).join('');
-    }
-    
-    function renderCotacoes() {
-        const tbody = document.querySelector('#tabelaCotacoes tbody');
-        if (cotacoes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center">Nenhuma cotação cadastrada</td></tr>';
-        } else {
-            tbody.innerHTML = cotacoes.map(c => `
-                <tr>
-                    <td>${c.id || ''}</td>
-                    <td>${c.cotacao || ''}</td>
-                    <td>${c.data || ''}</td>
-                    <td>${c.grupo || ''}</td>
-                    <td><button class="btn-danger" onclick="excluirCotacao('${c.id}')">🗑️ Excluir</button></td>
-                </tr>
-            `).join('');
-        }
-        
-        const div = document.getElementById('listaEnviadasFornecedor');
-        if (cotaFornecedor.length === 0) {
+        if (!cotaFornecedor || cotaFornecedor.length === 0) {
             div.innerHTML = '<p style="text-align:center; color:#666;">Nenhuma cotação enviada por fornecedores ainda.</p>';
         } else {
             div.innerHTML = cotaFornecedor.map(cf => `
@@ -1073,7 +614,7 @@ DOCTYPE html>
         const prodSelect = document.getElementById('lcProdutoSelect');
         if (prodSelect) {
             prodSelect.innerHTML = '<option value="">-- Selecione produto --</option>' + 
-                produtos.map(p => `<option value='${p.id}'>${p.produto} | ${p.marca || 'sem marca'}</option>`).join('');
+                produtos.map(p => `<option value="${p.id}">${p.produto} | ${p.marca || 'sem marca'}</option>`).join('');
             
             prodSelect.onchange = function() {
                 const produtoSelecionado = produtos.find(p => p.id === this.value);
@@ -1090,7 +631,12 @@ DOCTYPE html>
     
     // ==================== CARREGAR DADOS ====================
     async function carregarTodasTabelas() {
-        document.getElementById('connStatus').textContent = '🟡 Carregando...';
+        if (MODO_DEMO) {
+            document.getElementById('connStatus').textContent = '⚠️ Modo Demo';
+            document.getElementById('connStatus').style.background = '#e67e22';
+        } else {
+            document.getElementById('connStatus').textContent = '🟡 Carregando...';
+        }
         
         produtos = await listarDados('produtos');
         fornecedores = await listarDados('fornecedores');
@@ -1108,7 +654,34 @@ DOCTYPE html>
         renderGrupos();
         carregarDropdowns();
         
-        document.getElementById('connStatus').textContent = '🟢 Conectado';
+        if (!MODO_DEMO) {
+            document.getElementById('connStatus').textContent = '🟢 Conectado';
+            document.getElementById('connStatus').style.background = '#27ae60';
+        }
+    }
+    
+    // ==================== FUNÇÕES DE NAVEGAÇÃO ====================
+    function mostrarTela(screenId) {
+        // Esconder todas as telas
+        const allScreens = document.querySelectorAll('.screen');
+        allScreens.forEach(screen => {
+            screen.classList.add('hidden');
+        });
+        
+        // Mostrar a tela selecionada
+        const targetScreen = document.getElementById(`screen-${screenId}`);
+        if (targetScreen) {
+            targetScreen.classList.remove('hidden');
+        }
+        
+        // Atualizar botões ativos
+        const allButtons = document.querySelectorAll('.nav-btn');
+        allButtons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-screen') === screenId) {
+                btn.classList.add('active');
+            }
+        });
     }
     
     // ==================== CRUD PRODUTO ====================
@@ -1146,7 +719,7 @@ DOCTYPE html>
     };
     
     window.excluirProduto = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir este produto?')) {
             await excluirDados('produtos', id);
             await carregarTodasTabelas();
         }
@@ -1181,7 +754,7 @@ DOCTYPE html>
     };
     
     window.excluirFornecedor = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir este fornecedor?')) {
             await excluirDados('fornecedores', id);
             await carregarTodasTabelas();
         }
@@ -1235,7 +808,7 @@ DOCTYPE html>
     };
     
     window.excluirListaCompra = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir este item?')) {
             await excluirDados('listaCompras', id);
             await carregarTodasTabelas();
         }
@@ -1262,7 +835,7 @@ DOCTYPE html>
     };
     
     window.excluirCotacao = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir esta cotação?')) {
             await excluirDados('cotacoes', id);
             await carregarTodasTabelas();
         }
@@ -1288,7 +861,7 @@ DOCTYPE html>
     };
     
     window.excluirUnidade = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir esta unidade?')) {
             await excluirDados('unidades', id);
             await carregarTodasTabelas();
         }
@@ -1311,7 +884,7 @@ DOCTYPE html>
     };
     
     window.excluirGrupo = async (id) => {
-        if (confirm('Tem certeza?')) {
+        if (confirm('Tem certeza que deseja excluir este grupo?')) {
             await excluirDados('grupos', id);
             await carregarTodasTabelas();
         }
@@ -1333,18 +906,18 @@ DOCTYPE html>
         modalDiv.className = 'modal';
         modalDiv.innerHTML = `
             <div class='modal-content'>
-                <h2>📋 Lista de Cotação (para fornecedores)</h2>
+                <h2>📋 Lista de Cotação</h2>
                 <p style="color:#666; margin-bottom:1rem;">Preencha os preços e observações para cada item:</p>
                 <div id='itensCotacao'></div>
                 <hr style="margin: 1rem 0">
                 <div style="margin: 1rem 0;">
                     <label style="font-weight:bold;">Selecionar Fornecedor:</label>
-                    <select id='selectFornecedorCot' style="width:100%; margin-top:0.5rem;">
+                    <select id='selectFornecedorCot' style="width:100%; margin-top:0.5rem; padding:0.5rem;">
                         ${fornecedores.map(f => `<option value='${f.id}'>${f.fornecedor} - ${f.email || 'sem email'}</option>`).join('')}
                     </select>
                 </div>
                 <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <button id='enviarCotacaoBtn' class="btn-warning" style="flex:1;">✉️ Enviar Cotação para Apreciação</button>
+                    <button id='enviarCotacaoBtn' class="btn-warning" style="flex:1;">✉️ Enviar Cotação</button>
                     <button id='fecharModalCot' class="btn-secondary" style="flex:0.3;">Fechar</button>
                 </div>
             </div>
@@ -1361,9 +934,9 @@ DOCTYPE html>
                 <strong>🏷️ Marca:</strong> ${item.marca}<br>
                 <strong>📊 Quantidade:</strong> ${item.quantidade} ${item.unidade}<br>
                 <label style="margin-top:0.5rem;"><strong>💰 Preço Unitário (R$):</strong></label>
-                <input type='number' step='0.01' id='preco_${item.id}' placeholder='Ex: 10.50' style="width:100%; margin-top:0.3rem;"><br>
+                <input type='number' step='0.01' id='preco_${item.id}' placeholder='Ex: 10.50' style="width:100%; margin-top:0.3rem; padding:0.5rem;"><br>
                 <label style="margin-top:0.5rem;"><strong>📝 Observação:</strong></label>
-                <textarea id='obs_${item.id}' rows='2' placeholder="Prazo de entrega, condições..." style="width:100%; margin-top:0.3rem;"></textarea>
+                <textarea id='obs_${item.id}' rows='2' placeholder="Prazo de entrega, condições..." style="width:100%; margin-top:0.3rem; padding:0.5rem;"></textarea>
             `;
             containerItens.appendChild(div);
         });
@@ -1371,7 +944,6 @@ DOCTYPE html>
         modalDiv.querySelector('#enviarCotacaoBtn').onclick = async () => {
             const fornecedorId = modalDiv.querySelector('#selectFornecedorCot').value;
             const fornecedorNome = modalDiv.querySelector('#selectFornecedorCot').selectedOptions[0]?.text.split(' -')[0] || fornecedorId;
-            const fornecedor = fornecedores.find(f => f.id === fornecedorId);
             
             let enviados = 0;
             for (const item of listaCompras) {
@@ -1387,7 +959,7 @@ DOCTYPE html>
                         preco: parseFloat(preco),
                         observacao: obs,
                         fornecedorId: fornecedorId,
-                        fornecedorNome: fornecedor ? fornecedor.fornecedor : fornecedorNome,
+                        fornecedorNome: fornecedorNome,
                         dataEnvio: new Date().toISOString()
                     });
                     enviados++;
@@ -1399,38 +971,37 @@ DOCTYPE html>
                 return;
             }
             
-            alert(`✅ ${enviados} cotações enviadas para apreciação do setor de compras!`);
+            alert(`✅ ${enviados} cotações enviadas para apreciação!`);
             document.body.removeChild(modalDiv);
             await carregarTodasTabelas();
-            document.querySelector('.nav-btn[data-screen="cotacoes"]').click();
+            mostrarTela('cotacoes');
         };
         
         modalDiv.querySelector('#fecharModalCot').onclick = () => document.body.removeChild(modalDiv);
     });
     
-    // ==================== NAVEGAÇÃO ====================
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const screenId = 'screen-' + btn.dataset.screen;
-            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            const targetScreen = document.getElementById(screenId);
-            if (targetScreen) targetScreen.classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-    
     // ==================== INICIALIZAÇÃO ====================
     async function inicializar() {
-        if (SCRIPT_URL === "https://script.google.com/macros/s/SEU_SCRIPT_ID/exec" || SCRIPT_URL.includes("SEU_SCRIPT_ID")) {
-            document.getElementById('connStatus').textContent = '⚠️ Configurar URL';
-            document.getElementById('connStatus').style.background = '#e67e22';
-            alert('⚠️ ATENÇÃO: Configure a URL do seu Google Apps Script!\n\n1. Cole o script no Apps Script\n2. Implante como Web App\n3. Copie a URL\n4. Substitua no código (linha 380)');
-        } else {
-            await carregarTodasTabelas();
+        // Configurar navegação
+        const botoes = document.querySelectorAll('.nav-btn');
+        botoes.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const screenName = btn.getAttribute('data-screen');
+                mostrarTela(screenName);
+            });
+        });
+        
+        // Mostrar tela inicial
+        mostrarTela('produtos');
+        
+        // Carregar dados
+        if (MODO_DEMO) {
+            console.log('Modo demonstração ativo. Configure a URL do Google Apps Script para usar o banco de dados real.');
         }
+        await carregarTodasTabelas();
     }
     
+    // Iniciar aplicação
     inicializar();
 </script>
 </body>
